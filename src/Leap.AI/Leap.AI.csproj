@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -9,11 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Events\" />
-    <Folder Include="Infrastructure\" />
-    <Folder Include="Services\_refactor\" />
-    <Folder Include="Services\_base\" />
-    <Folder Include="Services\_common\" />
-    <Folder Include="Services\_interfaces\" />
   </ItemGroup>
 
 </Project>
