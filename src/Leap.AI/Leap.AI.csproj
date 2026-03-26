@@ -8,9 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\_interfaces\" />
-    <Folder Include="Entities\_common\" />
-    <Folder Include="Entities\_base\" />
     <Folder Include="Events\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Infrastructure\" />
