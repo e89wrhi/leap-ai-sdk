@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Folder Include="Events\" />
-    <Folder Include="Exceptions\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Services\_refactor\" />
     <Folder Include="Services\_base\" />
