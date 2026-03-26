@@ -18,6 +18,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leap.AI", "src\Leap.AI\Leap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeapTests", "src\LeapTests\LeapTests.csproj", "{996061FF-2A70-4168-AC26-D40E88B7520D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		assets\leap_banner.png = assets\leap_banner.png
+		assets\leap_logo.png = assets\leap_logo.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "models", "models", "{80509741-DD2C-4156-BE16-B1A97DE08C14}"
+	ProjectSection(SolutionItems) = preProject
+		assets\models\deepseek.png = assets\models\deepseek.png
+		assets\models\gemini.png = assets\models\gemini.png
+		assets\models\gpt.png = assets\models\gpt.png
+		assets\models\grok.png = assets\models\grok.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +57,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{80509741-DD2C-4156-BE16-B1A97DE08C14} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1BBABC56-D106-4B22-83C5-7EA3A5C6C05A}
