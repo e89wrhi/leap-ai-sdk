@@ -7,4 +7,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\_interfaces\" />
+    <Folder Include="Entities\_common\" />
+    <Folder Include="Entities\_base\" />
+    <Folder Include="Events\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Infrastructure\" />
+    <Folder Include="Services\_refactor\" />
+    <Folder Include="Services\_base\" />
+    <Folder Include="Services\_common\" />
+    <Folder Include="Services\_interfaces\" />
+  </ItemGroup>
+
 </Project>
