@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     
     <!-- NuGet Package Metadata -->
-    <PackageId>Leap.AiSdk</PackageId>
+    <PackageId>LeapAi.SDK</PackageId>
     <Version>1.0.0</Version>
     <Authors>Leap AI</Authors>
     <Company>Leap AI</Company>
@@ -14,12 +14,14 @@
     <PackageTags>ai;llm;sdk;openai;anthropic;gemini</PackageTags>
     <RepositoryUrl>https://github.com/e89wrhi/leap-ai-sdk</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     
     <!-- Auto-generate package on build -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Events\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

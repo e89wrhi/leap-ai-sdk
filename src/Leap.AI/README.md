@@ -1,35 +1,13 @@
-<p align="center">
-  <img src="assets/leap_logo.png" alt="Ai-Logo" width="120">
-</p>
-
 # Leap AI SDK
-
-<p align="center">
-  <a href="https://www.nuget.org/packages/LeapAi.Sdk"><img src="https://img.shields.io/nuget/v/LeapAi.Sdk.svg" alt="NuGet" /></a>
-</p>
-
-<p align="center">
-  <img src="assets/leap_banner.png" alt="Ai Banner" width="100%">
-</p>
-
 
 The **Leap AI SDK** is a provider-agnostic .NET toolkit designed to help you build AI-powered applications, chatbots, and agents. Built with a highly scalable, enterprise-grade architecture, it provides a unified, stateless service interface to interact with any language model.
 
-**AI Models**
-
-<p align="start">
-  <img src="assets/models/gpt.png" width="15%" />
-  <img src="assets/models/gemini.png" width="15%" />
-  <img src="assets/models/deepseek.png" width="15%" />
-  <img src="assets/models/grok.png" width="15%" />
-</p>
-
 ## Installation
 
-You will need the .NET SDK installed on your local development machine. You can find the package on [NuGet](https://www.nuget.org/packages/LeapAi.Sdk).
+You will need the .NET SDK installed on your local development machine.
 
 ```shell
-dotnet add package LeapAi.Sdk
+dotnet add package Leap.AiSdk
 ```
 
 ## Unified Provider Architecture
