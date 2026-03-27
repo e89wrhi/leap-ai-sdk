@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="assets/leap_logo.png" alt="Ai-Logo" width="120">
 </p>
 
@@ -34,18 +34,24 @@ The Leap AI SDK provides a unified API to interact with model providers natively
 By default, the SDK delegates execution to provider-adapters (`ILanguageModel`), ensuring that your application code remains completely agnostic to the underlying AI service.
 
 ```csharp
+using AiSdk;
+using AiSdk.Constants;
+using AiSdk.Entities.Chat;
 using AiSdk.Providers.OpenAi;
 using AiSdk.Services.Chat;
 
+// Set API Key globally
+AiConfiguration.ApiKey = "sk-...";
+
 // Initialize your provider adapter
-var openAiModel = new OpenAiModel("gpt-4o", "sk-...", new HttpClient());
+var openAiModel = new OpenAiModel(OpenAiModels.Gpt4oMini); // or new AnthropicModel(...)
 
 var chatService = new ChatService();
 
 var result = await chatService.CreateAsync(new ChatCreateOptions {
-  Model = openAiModel, // or new AnthropicModel("claude-3-opus", ...)
+  Model = openAiModel,
   Messages = new List<ChatMessage> {
-      new ChatMessage { Role = "user", Content = "Hello!" }
+      new ChatMessage { Role = ChatRoles.User, Content = "Hello!" }
   }
 });
 ```
@@ -59,44 +65,70 @@ var result = await chatService.CreateAsync(new ChatCreateOptions {
 You can generate text and chat completions using the standard `ChatService`. 
 
 ```csharp
-using AiSdk.Services.Chat;
-using AiSdk.Entities.Chat;
-
-var chatService = new ChatService();
-
-var response = await chatService.CreateAsync(new ChatCreateOptions {
+var options = new ChatCreateOptions {
   Model = openAiModel,
   Messages = new List<ChatMessage> {
-      new ChatMessage { Role = "user", Content = "What is an agent?" }
+      new ChatMessage { Role = ChatRoles.System, Content = "You are a helpful assistant." },
+      new ChatMessage { Role = ChatRoles.User, Content = "What is an agent?" }
   }
-});
+};
 
+var response = await chatService.CreateAsync(options);
 Console.WriteLine(response.Choices[0].Message.Content);
 ```
 
-### Streaming Text - 🚧 Upcoming
+### Streaming Text
 
-*This feature is currently under active development.*
+The SDK natively leverages Server-Sent Events (SSE) to map streamed responses into an `IAsyncEnumerable<ChatCompletionChunk>`, allowing you to yield chunks of text to the UI in real-time.
 
-We are building a `ChatStreamService` that leverages Server-Sent Events (SSE) to map streamed responses into an `IAsyncEnumerable<ChatCompletionChunk>`, allowing you to yield chunks of text to the UI in real-time.
+```csharp
+var options = new ChatCreateOptions
+{
+    Model = openAiModel,
+    Messages = new List<ChatMessage>
+    {
+        new ChatMessage { Role = ChatRoles.User, Content = "Count to 3 quickly." }
+    }
+};
 
-### Generating Structured Data (JSON) - 🚧 Upcoming
+await foreach (var chunk in chatService.StreamAsync(options))
+{
+    if (chunk.Choices is { Count: > 0 } && chunk.Choices[0].Delta?.Content != null)
+    {
+        Console.Write(chunk.Choices[0].Delta.Content);
+    }
+}
+```
 
-*This feature is currently under active development.*
+### Generating Structured Data (JSON)
 
-We are developing a `JsonChatService` that enforces the JSON response format from providers and utilizes `System.Text.Json` source generators to perfectly map AI responses directly to strongly-typed C# objects without manual string parsing.
+The `ChatJsonService` enforces accurate JSON output from providers and maps the AI response directly into your strongly-typed C# objects automatically without manual string parsing.
+
+```csharp
+using AiSdk.Services.ChatJson;
+
+public record Recipe(string Name, int PrepTimeMinutes, List<string> Ingredients);
+
+var chatJsonService = new ChatJsonService();
+var jsonOptions = new ChatCreateOptions
+{
+    Model = openAiModel,
+    Messages = new List<ChatMessage>
+    {
+        new ChatMessage { Role = ChatRoles.System, Content = "You extract data into JSON formatted strictly to the requested structure." },
+        new ChatMessage { Role = ChatRoles.User, Content = "Generate a simple chocolate chip cookie recipe." }
+    }
+};
+
+var recipe = await chatJsonService.CreateObjectAsync<Recipe>(jsonOptions);
+Console.WriteLine($"Recipe: {recipe.Name} ({recipe.PrepTimeMinutes}m prep)");
+
 
 ### Agents & Tool Calling - 🚧 Upcoming
 
 *This feature is currently under active development.*
 
 We are bringing dynamic agent capabilities into .NET. You will soon be able to use the `ToolLoopAgent` functionality to seamlessly map your native C# methods to AI tool definitions using Reflection or modern Source Generators.
-
-### UI Integration - 🚧 Upcoming
-
-*This feature is currently under active development.*
-
-The SDK aims to provide a set of middleware components, frameworks, and hubs (e.g., streaming over SignalR) to help you build responsive generative user interfaces across Blazor, ASP.NET Core MVC, and raw minimal APIs.
 
 ---
 
