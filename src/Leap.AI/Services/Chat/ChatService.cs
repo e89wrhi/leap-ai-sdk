@@ -1,4 +1,4 @@
-﻿using AiSdk.Entities.Chat;
+using AiSdk.Entities.Chat;
 using AiSdk.Providers;
 
 namespace AiSdk.Services.Chat;
@@ -19,5 +19,19 @@ public class ChatService : Service<ChatCompletion>
 
         options.Stream = false;
         return model.DoGenerateAsync(options, cancellationToken);
+    }
+
+    public IAsyncEnumerable<ChatCompletionChunk> StreamAsync(ChatCreateOptions options, CancellationToken cancellationToken = default)
+    {
+        if (options.Model == null)
+        {
+            throw new ArgumentException("Model must be specified.");
+        }
+
+        ILanguageModel model = options.Model.AsT2
+            ?? Providers.ModelRegistry.GetModel(options.Model.AsT1!);
+
+        options.Stream = true;
+        return model.DoStreamAsync(options, cancellationToken);
     }
 }

@@ -1,66 +1,45 @@
-﻿using AiSdk.Entities.Chat;
-using AiSdk.Entities.Common;
-using AiSdk.Exceptions;
-using AiSdk.Infrastructure;
+using AiSdk.Entities.Chat;
 using AiSdk.Services.Chat;
+using AiSdk.Infrastructure;
 using System.Text.Json;
 
 namespace AiSdk.Providers.Anthropic;
 
-public class AnthropicModel : ILanguageModel
+public class AnthropicModel : BaseLanguageModel
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _apiKey;
+    public override string ProviderName => "Anthropic";
 
-    public string ProviderName => "Anthropic";
-    public string ModelId { get; }
-
-    public AnthropicModel(string modelId, string apiKey, HttpClient? httpClient = null)
+    public AnthropicModel(string modelId, string? apiKey = null, HttpClient? httpClient = null)
+        : base(modelId, apiKey, httpClient)
     {
-        ModelId = modelId;
-        _apiKey = apiKey;
-        _httpClient = httpClient ?? new HttpClient();
     }
 
-    public async Task<ChatCompletion> DoGenerateAsync(ChatCreateOptions options, CancellationToken cancellationToken)
+    public override async Task<ChatCompletion> DoGenerateAsync(ChatCreateOptions options, CancellationToken cancellationToken)
     {
-        var request = CreateRequestMessage(options);
-        var response = await _httpClient.SendAsync(request, cancellationToken);
+        var response = await SendWithRetryAsync(() => CreateRequestMessage(options), cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
-            var errorBody = await response.Content.ReadAsStringAsync();
-            AiError? aiError = null;
-            try { aiError = JsonSerializer.Deserialize<AiErrorResponse>(errorBody)?.Error; } catch { }
-            throw new AiSdkException($"Anthropic Error: {response.StatusCode}", response.StatusCode, aiError, ProviderName);
+            await HandleErrorAsync(response, ProviderName);
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
-
-        // In a real adapter, this parses Anthropic's unique schema into standard ChatCompletion
         return MapToStandardCompletion(responseBody);
     }
 
-    public async IAsyncEnumerable<ChatCompletionChunk> DoStreamAsync(ChatCreateOptions options, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<ChatCompletionChunk> DoStreamAsync(ChatCreateOptions options, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
     {
         options.Stream = true;
-        var request = CreateRequestMessage(options);
-
-        var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        var response = await SendWithRetryAsync(() => CreateRequestMessage(options), cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
-            var errorBody = await response.Content.ReadAsStringAsync();
-            AiError? aiError = null;
-            try { aiError = JsonSerializer.Deserialize<AiErrorResponse>(errorBody)?.Error; } catch { }
-            throw new AiSdkException($"Anthropic Stream Error: {response.StatusCode}", response.StatusCode, aiError, ProviderName);
+            await HandleErrorAsync(response, $"{ProviderName} Stream");
         }
 
         using var stream = await response.Content.ReadAsStreamAsync();
-
         await foreach (var chunk in SseReader.ReadStreamAsync<ChatCompletionChunk>(stream, cancellationToken))
         {
-            // In a real adapter, map from Anthropic's stream to `ChatCompletionChunk`
             yield return chunk;
         }
     }
@@ -71,7 +50,6 @@ public class AnthropicModel : ILanguageModel
         request.Headers.Add("x-api-key", _apiKey);
         request.Headers.Add("anthropic-version", "2023-06-01");
 
-        // Basic mapping logic matching Stripe pattern expectation
         var payload = new
         {
             model = ModelId,
@@ -87,7 +65,6 @@ public class AnthropicModel : ILanguageModel
 
     private ChatCompletion MapToStandardCompletion(string rawJson)
     {
-        // Placeholder: dummy parsing to return Standard Entity
         return JsonSerializer.Deserialize<ChatCompletion>(rawJson)!;
     }
 }

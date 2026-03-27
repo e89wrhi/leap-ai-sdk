@@ -1,61 +1,45 @@
-﻿using AiSdk.Entities.Chat;
-using AiSdk.Entities.Common;
-using AiSdk.Exceptions;
-using AiSdk.Infrastructure;
+using AiSdk.Entities.Chat;
 using AiSdk.Services.Chat;
+using AiSdk.Infrastructure;
 using System.Text.Json;
 
 namespace AiSdk.Providers.OpenAi;
 
-public class OpenAiModel : ILanguageModel
+public class OpenAiModel : BaseLanguageModel
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _apiKey;
+    public override string ProviderName => "OpenAI";
 
-    public string ProviderName => "OpenAI";
-    public string ModelId { get; }
-
-    public OpenAiModel(string modelId, string apiKey, HttpClient? httpClient = null)
+    public OpenAiModel(string modelId, string? apiKey = null, HttpClient? httpClient = null)
+        : base(modelId, apiKey, httpClient)
     {
-        ModelId = modelId;
-        _apiKey = apiKey;
-        _httpClient = httpClient ?? new HttpClient();
     }
 
-    public async Task<ChatCompletion> DoGenerateAsync(ChatCreateOptions options, CancellationToken cancellationToken)
+    public override async Task<ChatCompletion> DoGenerateAsync(ChatCreateOptions options, CancellationToken cancellationToken)
     {
-        var request = CreateRequestMessage(options);
-        var response = await _httpClient.SendAsync(request, cancellationToken);
+        var response = await SendWithRetryAsync(() => CreateRequestMessage(options), cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
-            var errorBody = await response.Content.ReadAsStringAsync();
-            AiError? aiError = null;
-            try { aiError = JsonSerializer.Deserialize<AiErrorResponse>(errorBody)?.Error; } catch { }
-            throw new AiSdkException($"OpenAI Error: {response.StatusCode}", response.StatusCode, aiError, ProviderName);
+            await HandleErrorAsync(response, ProviderName);
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<ChatCompletion>(responseBody)!;
     }
 
-    public async IAsyncEnumerable<ChatCompletionChunk> DoStreamAsync(ChatCreateOptions options, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
+    public override async IAsyncEnumerable<ChatCompletionChunk> DoStreamAsync(ChatCreateOptions options, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
     {
         options.Stream = true;
-        var request = CreateRequestMessage(options);
-
-        var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        // Streaming doesn't easily support automatic retries for the stream itself once it starts,
+        // but we can retry the initial connection.
+        var response = await SendWithRetryAsync(() => CreateRequestMessage(options), cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
-            var errorBody = await response.Content.ReadAsStringAsync();
-            AiError? aiError = null;
-            try { aiError = JsonSerializer.Deserialize<AiErrorResponse>(errorBody)?.Error; } catch { }
-            throw new AiSdkException($"OpenAI Stream Error: {response.StatusCode}", response.StatusCode, aiError, ProviderName);
+            await HandleErrorAsync(response, $"{ProviderName} Stream");
         }
 
         using var stream = await response.Content.ReadAsStreamAsync();
-
         await foreach (var chunk in SseReader.ReadStreamAsync<ChatCompletionChunk>(stream, cancellationToken))
         {
             yield return chunk;
