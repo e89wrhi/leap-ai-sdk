@@ -12,7 +12,7 @@
     <Company>Leap AI</Company>
     <Description>High-performance, provider-agnostic .NET AI SDK inspired by the Vercel AI SDK and Stripe.net architectures.</Description>
     <PackageTags>ai;llm;sdk;openai;anthropic;gemini</PackageTags>
-    <RepositoryUrl>https://github.com/leap-ai/leap-sdk-dotnet</RepositoryUrl>
+    <RepositoryUrl>https://github.com/e89wrhi/leap-ai-sdk</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     
     <!-- Auto-generate package on build -->
