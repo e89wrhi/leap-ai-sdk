@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <PackageId>Leap.AI.Providers.Google</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Leap AI</Authors>
+    <Description>Google Gemini provider for Leap AI SDK v2.0. Supports Gemini 1.5 Pro/Flash with streaming and tool calling.</Description>
+    <PackageTags>ai;llm;google;gemini;sdk;streaming</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Leap.AI.Core\Leap.AI.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -7,7 +7,7 @@
     
     <!-- NuGet Package Metadata -->
     <PackageId>LeapAi.SDK</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Leap AI</Authors>
     <Company>Leap AI</Company>
     <Description>High-performance, provider-agnostic .NET AI SDK inspired by the Vercel AI SDK and Stripe.net architectures.</Description>

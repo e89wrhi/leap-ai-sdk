@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <PackageId>Leap.AI.Providers.Anthropic</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Leap AI</Authors>
+    <Description>Anthropic messages provider for Leap AI SDK v2.0. Supports Claude 3, 3.5 with streaming and tool calling.</Description>
+    <PackageTags>ai;llm;anthropic;claude;sdk;streaming</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Leap.AI.Core\Leap.AI.Core.csproj" />
+  </ItemGroup>
+
+</Project>
