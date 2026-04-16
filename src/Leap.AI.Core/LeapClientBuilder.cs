@@ -1,4 +1,6 @@
 using Leap.AI.Core.Abstractions;
+using Leap.AI.Core.Models;
+using Leap.AI.Core.Pipeline;
 using Leap.AI.Core.Tools;
 
 namespace Leap.AI.Core;
@@ -24,9 +26,9 @@ public sealed class LeapClientBuilder
 
     internal LeapClientBuilder() { }
 
-    // ── Provider ─────────────────────────────────────────────────────────────
+    // ── Provider ──────────────────────────────────────────────────────────────
 
-    /// <summary>Sets the AI provider. Called by provider extension methods (e.g., .UseOpenAi()).</summary>
+    /// <summary>Sets the AI provider. Called by provider extension methods (e.g. .UseOpenAi()).</summary>
     public LeapClientBuilder WithProvider(ILeapProvider provider)
     {
         _provider = provider;
@@ -42,7 +44,9 @@ public sealed class LeapClientBuilder
         return this;
     }
 
-    /// <summary>Adds a middleware from a delegate — useful for simple inline middleware.</summary>
+    /// <summary>
+    /// Adds a middleware from a delegate — convenient for lightweight inline interceptors.
+    /// </summary>
     public LeapClientBuilder UseMiddleware(
         Func<ChatContext, Func<ChatContext, Task<ChatResponse>>, CancellationToken, Task<ChatResponse>> handler)
     {
@@ -61,7 +65,7 @@ public sealed class LeapClientBuilder
 
     // ── Options ───────────────────────────────────────────────────────────────
 
-    /// <summary>Configures global default options (temperature, system prompt, retries, etc.).</summary>
+    /// <summary>Configures global defaults (temperature, system prompt, retry counts, etc.).</summary>
     public LeapClientBuilder WithOptions(Action<LeapOptions> configure)
     {
         configure(_options);
@@ -75,18 +79,16 @@ public sealed class LeapClientBuilder
     {
         if (_provider is null)
             throw new InvalidOperationException(
-                "No provider configured. Call a provider extension method such as .UseOpenAi(\"key\") " +
+                "No provider configured. Call a provider extension such as .UseOpenAi(\"key\") " +
                 "or .WithProvider(myProvider) before calling .Build().");
 
         return new LeapClient(_provider, [.. _middlewares], _toolRegistry, _options);
     }
 }
 
-// ── Internal Helpers ──────────────────────────────────────────────────────────
+// ── Internal: Delegate-based middleware shim ──────────────────────────────────
 
-using Leap.AI.Core.Models;
-using Leap.AI.Core.Pipeline;
-
+/// <summary>Wraps a delegate as an <see cref="ILeapMiddleware"/> — used by the delegate overload of UseMiddleware.</summary>
 internal sealed class DelegateMiddleware(
     Func<ChatContext, Func<ChatContext, Task<ChatResponse>>, CancellationToken, Task<ChatResponse>> _handler)
     : ILeapMiddleware
