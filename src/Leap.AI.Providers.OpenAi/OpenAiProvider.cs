@@ -5,7 +5,7 @@ using System.Text.Json;
 using Leap.AI.Core.Abstractions;
 using Leap.AI.Core.Errors;
 using Leap.AI.Core.Models;
-using Leap.AI.Providers.OpenAi.Internal;
+using Leap.AI.Providers.OpenAi.Dtos;
 
 namespace Leap.AI.Providers.OpenAi;
 
