@@ -1,41 +1,64 @@
+<p align="center">
+  <img src="assets/leap_logo.png" alt="Ai-Logo" width="120">
+</p>
+
 # Leap AI SDK
+
+<p align="center">
+  <a href="https://www.nuget.org/packages/LeapAi.Sdk"><img src="https://img.shields.io/nuget/v/LeapAi.Sdk.svg" alt="NuGet" /></a>
+</p>
+
+<p align="center">
+  <img src="assets/leap_banner.png" alt="Ai Banner" width="100%">
+</p>
+
 
 The **Leap AI SDK** is a provider-agnostic .NET toolkit designed to help you build AI-powered applications, chatbots, and agents. Built with a highly scalable, enterprise-grade architecture, it provides a unified, stateless service interface to interact with any language model.
 
+**AI Models**
+
+<p align="start">
+  <img src="assets/models/gpt.png" width="15%" />
+  <img src="assets/models/gemini.png" width="15%" />
+  <img src="assets/models/deepseek.png" width="15%" />
+  <img src="assets/models/grok.png" width="15%" />
+</p>
+
 ## Installation
 
-You will need the .NET SDK installed on your local development machine.
+You will need the .NET SDK installed on your local development machine. You can find the package on [NuGet](https://www.nuget.org/packages/LeapAi.Sdk).
 
 ```shell
-dotnet add package Leap.AiSdk
+dotnet add package LeapAi.Sdk
 ```
+
+### Available NuGet Packages
+Leap AI SDK v2.0 introduces a modular architecture. You can install the fully-featured metapackage or adopt specifically what you need:
+- `LeapAi.SDK`: The all-in-one metapackage containing Core and all available providers.
+- `Leap.AI.Core`: The bare-metal abstractions, unified models, and pipeline architecture.
+- `Leap.AI.Providers.OpenAi`: Official OpenAI adapter (GPT-4o, o1, etc.).
+- `Leap.AI.Providers.Anthropic`: Official Anthropic adapter (Claude 3.5 Sonnet, etc.).
+- `Leap.AI.Providers.Google`: Official Google Gemini adapter (Gemini 1.5 Flash/Pro, etc.).
+- `Leap.AI.Extensions.DependencyInjection`: Official builder extensions for ASP.NET Core `IServiceCollection` integrations.
 
 ## Unified Provider Architecture
 
-The Leap AI SDK provides a unified API to interact with model providers natively from C#.
-By default, the SDK delegates execution to provider-adapters (`ILanguageModel`), ensuring that your application code remains completely agnostic to the underlying AI service.
+Leap AI SDK v2.0 introduces a high-performance **middleware pipeline** architecture designed natively for .NET. It lets you plug in OpenAI, Anthropic, or Google Gemini and write strictly against a unified, model-agnostic `LeapClient`.
 
 ```csharp
-using AiSdk;
-using AiSdk.Constants;
-using AiSdk.Entities.Chat;
-using AiSdk.Providers.OpenAi;
-using AiSdk.Services.Chat;
+using Leap.AI.Core;
+using Leap.AI.Providers.OpenAi;
+using Leap.AI.Core.Models;
 
-// Set API Key globally
-AiConfiguration.ApiKey = "sk-...";
+// 1. Build your client pipeline
+var leap = LeapClient.Create()
+    .UseOpenAi("sk-...", "gpt-4o-mini") // Or .UseAnthropic() / .UseGoogle()
+    .UseLogging()
+    .UseRetry(maxRetries: 3)
+    .Build();
 
-// Initialize your provider adapter
-var openAiModel = new OpenAiModel(OpenAiModels.Gpt4oMini); // or new AnthropicModel(...)
-
-var chatService = new ChatService();
-
-var result = await chatService.CreateAsync(new ChatCreateOptions {
-  Model = openAiModel,
-  Messages = new List<ChatMessage> {
-      new ChatMessage { Role = ChatRoles.User, Content = "Hello!" }
-  }
-});
+// 2. Generate
+string result = await leap.GenerateTextAsync("Hello!");
 ```
 
 ---
@@ -44,73 +67,68 @@ var result = await chatService.CreateAsync(new ChatCreateOptions {
 
 ### Generating Text (Chat)
 
-You can generate text and chat completions using the standard `ChatService`. 
+Generating conversational output is clean and simple. You can query models directly with raw strings or conversational histories.
 
 ```csharp
-var options = new ChatCreateOptions {
-  Model = openAiModel,
-  Messages = new List<ChatMessage> {
-      new ChatMessage { Role = ChatRoles.System, Content = "You are a helpful assistant." },
-      new ChatMessage { Role = ChatRoles.User, Content = "What is an agent?" }
-  }
+var messages = new List<ChatMessage> {
+    ChatMessage.System("You are a helpful assistant."),
+    ChatMessage.User("What is an agent?")
 };
 
-var response = await chatService.CreateAsync(options);
-Console.WriteLine(response.Choices[0].Message.Content);
+var response = await leap.GenerateTextAsync(messages.ToString());
+Console.WriteLine(response);
 ```
 
 ### Streaming Text
 
-The SDK natively leverages Server-Sent Events (SSE) to map streamed responses into an `IAsyncEnumerable<ChatCompletionChunk>`, allowing you to yield chunks of text to the UI in real-time.
+The SDK natively leverages Server-Sent Events (SSE) providing an `IAsyncEnumerable<ChatChunk>`. It unifies the varying streaming schemas from Anthropic, Google, and OpenAI under a single interface.
 
 ```csharp
-var options = new ChatCreateOptions
+await foreach (var chunk in leap.StreamAsync("Count to 3 quickly."))
 {
-    Model = openAiModel,
-    Messages = new List<ChatMessage>
-    {
-        new ChatMessage { Role = ChatRoles.User, Content = "Count to 3 quickly." }
-    }
-};
-
-await foreach (var chunk in chatService.StreamAsync(options))
-{
-    if (chunk.Choices is { Count: > 0 } && chunk.Choices[0].Delta?.Content != null)
-    {
-        Console.Write(chunk.Choices[0].Delta.Content);
-    }
+    Console.Write(chunk.Text);
 }
 ```
 
 ### Generating Structured Data (JSON)
 
-The `ChatJsonService` enforces accurate JSON output from providers and maps the AI response directly into your strongly-typed C# objects automatically without manual string parsing.
+The `GenerateObjectAsync<T>` method dynamically builds JSON Schema definitions strictly from your C# `record` or `class` definitions, complete with type enforcement, enum mapping, nullable safety, and validation retries.
 
 ```csharp
-using AiSdk.Services.ChatJson;
-
 public record Recipe(string Name, int PrepTimeMinutes, List<string> Ingredients);
 
-var chatJsonService = new ChatJsonService();
-var jsonOptions = new ChatCreateOptions
-{
-    Model = openAiModel,
-    Messages = new List<ChatMessage>
-    {
-        new ChatMessage { Role = ChatRoles.System, Content = "You extract data into JSON formatted strictly to the requested structure." },
-        new ChatMessage { Role = ChatRoles.User, Content = "Generate a simple chocolate chip cookie recipe." }
-    }
-};
+var recipe = await leap.GenerateObjectAsync<Recipe>(
+    "Generate a simple chocolate chip cookie recipe."
+);
 
-var recipe = await chatJsonService.CreateObjectAsync<Recipe>(jsonOptions);
 Console.WriteLine($"Recipe: {recipe.Name} ({recipe.PrepTimeMinutes}m prep)");
+```
 
+### Agents & Tool Calling
 
-### Agents & Tool Calling - 🚧 Upcoming
+Leap AI v2.0 includes fully-automated tool calling execution. Just create a `FunctionTool<T>` definition, attach it to your client, and the SDK will automatically manage the round-trip loops required.
 
-*This feature is currently under active development.*
+```csharp
+using Leap.AI.Core.Tools;
 
-We are bringing dynamic agent capabilities into .NET. You will soon be able to use the `ToolLoopAgent` functionality to seamlessly map your native C# methods to AI tool definitions using Reflection or modern Source Generators.
+public record WeatherArgs(string City);
+
+// 1. Define your tool
+var weatherTool = FunctionTool<WeatherArgs>.Create(
+    name: "get_weather",
+    description: "Gets the current weather for a specific city.",
+    handler: args => $"The weather in {args.City} is sunny and 22C."
+);
+
+// 2. Register it when building the client
+var leap = LeapClient.Create()
+    .UseOpenAi("sk-...")
+    .UseTool(weatherTool)
+    .Build();
+
+// 3. The SDK automatically resolves the tool requests in the background!
+var response = await leap.GenerateTextAsync("What's the weather like in Paris?");
+```
 
 ---
 

@@ -14,6 +14,7 @@
     <PackageTags>ai;llm;sdk;openai;anthropic;gemini;streaming;pipeline</PackageTags>
     <RepositoryUrl>https://github.com/e89wrhi/leap-ai-sdk</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     
     <!-- Auto-generate package on build -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -24,6 +25,10 @@
     <ProjectReference Include="..\Leap.AI.Providers.OpenAi\Leap.AI.Providers.OpenAi.csproj" />
     <ProjectReference Include="..\Leap.AI.Providers.Anthropic\Leap.AI.Providers.Anthropic.csproj" />
     <ProjectReference Include="..\Leap.AI.Providers.Google\Leap.AI.Providers.Google.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
