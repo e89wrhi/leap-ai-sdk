@@ -35,11 +35,14 @@ public sealed class AnthropicProvider : ILeapProvider
         _httpClient = options.HttpClient ?? new HttpClient();
         
         // I set these headers once to ensure every request is properly identified
+        // We set these headers to ensure every request is properly identified
         // by Anthropic's load balancers and versioned correctly.
-        _httpClient.DefaultRequestHeaders.Clear();
-        _httpClient.DefaultRequestHeaders.Add("x-api-key", options.ApiKey);
-        _httpClient.DefaultRequestHeaders.Add("anthropic-version", options.AnthropicVersion);
-        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", options.ApiKey);
+        _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("anthropic-version", options.AnthropicVersion);
+        if (!_httpClient.DefaultRequestHeaders.Accept.Any(x => x.MediaType == "application/json"))
+        {
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        }
     }
 
     /// <summary>

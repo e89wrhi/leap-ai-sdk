@@ -6,7 +6,7 @@ namespace Leap.AI.Core.Tools;
 
 /// <summary>
 /// Generates a basic JSON Schema from a .NET type using reflection.
-/// Supports: primitives, strings, enums, nullable types, arrays, List&lt;T&gt;, and nested objects.
+/// Supports: primitives, strings, enums, nullable types, collections (IEnumerable&lt;T&gt;, arrays, lists), and nested objects.
 /// </summary>
 public static class JsonSchemaGenerator
 {
@@ -45,11 +45,15 @@ public static class JsonSchemaGenerator
         if (type.IsEnum)
             return new() { ["type"] = "string", ["enum"] = Enum.GetNames(type) };
 
-        // Arrays and List<T>
+        // Arrays, Enumerables, and Dictionaries
         Type? elementType = null;
-        if (type.IsArray)
+        if (type.IsGenericType && type.Name.Contains("Dictionary"))
+            return Primitive("object");
+        else if (type.IsArray)
             elementType = type.GetElementType();
-        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        else if (type.GetInterface("IEnumerable`1") is Type ienum)
+            elementType = ienum.GetGenericArguments()[0];
+        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             elementType = type.GetGenericArguments()[0];
 
         if (elementType is not null)

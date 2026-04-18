@@ -35,16 +35,23 @@ public sealed class ResilienceMiddleware : ILeapMiddleware
             catch (LeapRateLimitException ex) when (attempt < _maxRetries)
             {
                 attempt++;
-                var delay = ex.RetryAfter ?? TimeSpan.FromSeconds(Math.Pow(2, attempt) * _baseDelay.TotalSeconds);
+                var delay = ex.RetryAfter ?? CalculateDelayWithJitter(attempt);
                 await Task.Delay(delay, ct);
             }
             catch (LeapException ex) when (IsTransient(ex) && attempt < _maxRetries)
             {
                 attempt++;
-                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt) * _baseDelay.TotalSeconds);
+                var delay = CalculateDelayWithJitter(attempt);
                 await Task.Delay(delay, ct);
             }
         }
+    }
+
+    private TimeSpan CalculateDelayWithJitter(int attempt)
+    {
+        var baseSeconds = Math.Pow(2, attempt) * _baseDelay.TotalSeconds;
+        var jitter = Random.Shared.NextDouble() * 0.5 + 0.75; // 0.75x to 1.25x
+        return TimeSpan.FromSeconds(baseSeconds * jitter);
     }
 
     private static bool IsTransient(LeapException ex) =>

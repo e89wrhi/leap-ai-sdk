@@ -17,8 +17,8 @@ public sealed class LeapOptions
     /// <summary>System prompt automatically prepended to every conversation.</summary>
     public string? DefaultSystemPrompt { get; set; }
 
-    /// <summary>Maximum transient network retry attempts (exponential backoff).</summary>
-    public int MaxNetworkRetries { get; set; } = 3;
+    /// <summary>Maximum iterations the client will follow tool-call chains before stopping.</summary>
+    public int MaxToolIterations { get; set; } = 10;
 
     /// <summary>Maximum retry attempts when structured output fails JSON validation.</summary>
     public int MaxStructuredOutputRetries { get; set; } = 3;

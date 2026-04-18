@@ -89,6 +89,10 @@ public sealed class LeapClient : IObjectGenerator
         => StreamAsync([ChatMessage.User(prompt)], configure, ct);
 
     /// <summary>Streams response chunks from a list of messages.</summary>
+    /// <remarks>
+    /// Note: Streaming currently bypasses the automatic tool execution loop. If the model
+    /// requests a tool call during a stream, it will be silently skipped.
+    /// </remarks>
     public IAsyncEnumerable<ChatChunk> StreamAsync(
         IList<ChatMessage> messages,
         Action<ChatRequest>? configure = null,
@@ -175,7 +179,8 @@ public sealed class LeapClient : IObjectGenerator
         var response = await _pipeline.ExecuteAsync(request, ct);
 
         // Automatic tool-call execution loop
-        while (response.ToolCalls?.Count > 0)
+        var iteration = 0;
+        while (response.ToolCalls?.Count > 0 && iteration++ < _options.MaxToolIterations)
         {
             var messages = new List<ChatMessage>(request.Messages)
             {
