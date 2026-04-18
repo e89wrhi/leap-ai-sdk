@@ -1,42 +1,52 @@
 # Chat & Streaming API
 
-The Leap AI SDK provides both synchronous and streaming interfaces for chat completions.
+The Leap AI SDK v2.0 provides both synchronous and streaming interfaces for chat completions over a middleware pipeline.
 
-## ChatService
+## Generating Text
 
-`ChatService` is used for standard request-response cycles.
+`GenerateTextAsync` is used for standard request-response cycles.
 
-### Methods
-- `CreateAsync(ChatCreateOptions options, CancellationToken ct = default)`: Returns a `Task<ChatCompletion>`.
+```csharp
+var leap = LeapClient.Create()
+    .UseOpenAi("sk-...", "gpt-4o")
+    .Build();
 
-### Options
-- `Model`: The `ILanguageModel` instance (e.g., `OpenAiModel`).
-- `Messages`: A list of `ChatMessage` objects.
-- `Temperature`: Sampling temperature (0.0 to 2.0).
-- `MaxTokens`: Limits the response length.
+var response = await leap.GenerateTextAsync("Hello! Write me a short story.");
+Console.WriteLine(response);
+```
+
+You can also pass `List<ChatMessage>` objects:
+```csharp
+var messages = new List<ChatMessage> {
+    ChatMessage.System("You are an aggressive pirate."),
+    ChatMessage.User("Give me directions to the store.")
+};
+
+var response = await leap.GenerateAsync(messages);
+```
 
 ## Streaming Completions
 
-Streaming allows you to receive tokens as they are generated, providing a more responsive user experience.
+Streaming allows you to receive tokens as they are generated, providing a more responsive user experience (for UI or console apps).
 
 ```csharp
-var options = new ChatCreateOptions {
-    Model = model,
-    Messages = new List<ChatMessage> {
-        new ChatMessage { Role = ChatRoles.User, Content = "Write a short story." }
-    }
-};
-
-await foreach (var chunk in chatService.StreamAsync(options))
+await foreach (var chunk in leap.StreamAsync("Write a 5 paragraph essay on deep learning."))
 {
-    var content = chunk.Choices[0].Delta?.Content;
-    if (!string.IsNullOrEmpty(content))
-    {
-        Console.Write(content);
-    }
+    Console.Write(chunk.Text);
 }
 ```
 
+## Options & Middleware
+
+You can configure options per-pipeline builder:
+```csharp
+var leap = LeapClient.Create()
+    .UseOpenAi("sk-...", "gpt-4o")
+    .UseLogging() // Auto-log AI pipeline events
+    .UseRetry(maxRetries: 3) // Native exponential backoff
+    .Build();
+```
+
 ## Best Practices
-1. **Cancellation**: Always pass a `CancellationToken` to `CreateAsync` and `StreamAsync` to allow users to stop long-running generations.
-2. **Error Handling**: Wrap calls in try-catch blocks to handle `AiSdkException` or network timeouts.
+1. **Cancellation**: Pass a `CancellationToken` to `StreamAsync(messages, ct)` to allow UI users to stop long-running generations.
+2. **System Prompts**: Always begin a multiple-message chain with `ChatMessage.System()` when instructions are needed.

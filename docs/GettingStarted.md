@@ -1,6 +1,6 @@
-# Getting Started with Leap AI SDK
+# Getting Started with Leap AI SDK v2.0
 
-Welcome to the Leap AI SDK! This guide will help you get up and running with your first AI-powered application using .NET.
+Welcome to the Leap AI SDK v2.0! This guide will help you get up and running with your first AI-powered application using .NET.
 
 ## Installation
 
@@ -11,50 +11,29 @@ The Leap AI SDK is available as a NuGet package. You can install it using the .N
 dotnet add package LeapAi.Sdk
 ```
 
-### Package Manager
-```powershell
-Install-Package LeapAi.Sdk
-```
-
-## Configuration
-
-Before making requests, you need to configure your API key. You can do this globally:
-
-```csharp
-using AiSdk;
-
-AiConfiguration.ApiKey = "your-api-key-here";
-```
+*Note: As this is currently in Prerelease, you might need to append `--prerelease` flag.*
 
 ## Your First Chat Request
 
-The `ChatService` is the primary way to interact with language models.
+Leap AI v2 is built around a fluent **pipeline builder** (`LeapClient.Create()`).
 
 ```csharp
-using AiSdk.Providers.OpenAi;
-using AiSdk.Services.Chat;
-using AiSdk.Entities.Chat;
-using AiSdk.Constants;
+using Leap.AI.Core;
+using Leap.AI.Providers.OpenAi;
 
-// 1. Initialize the provider
-var model = new OpenAiModel(OpenAiModels.Gpt4oMini);
+// 1. Configure the pipeline and provider
+var leap = LeapClient.Create()
+    .UseOpenAi("your-api-key-here", "gpt-4o-mini")
+    .Build();
 
-// 2. Create the chat service
-var chatService = new ChatService();
+// 2. Generate a response!
+string response = await leap.GenerateTextAsync("Hello, what can you do?");
 
-// 3. Send a message
-var response = await chatService.CreateAsync(new ChatCreateOptions {
-    Model = model,
-    Messages = new List<ChatMessage> {
-        new ChatMessage { Role = ChatRoles.User, Content = "Hello, what can you do?" }
-    }
-});
-
-Console.WriteLine(response.Choices[0].Message.Content);
+Console.WriteLine(response);
 ```
 
 ## Next Steps
 
-- Explore [Streaming API](./ChatAPI.md) for real-time responses.
+- Explore [Chat API](./ChatAPI.md) for real-time streaming constraints.
 - Learn about [Structured Data](./StructuredData.md) for type-safe JSON extraction.
 - See supported [Providers](./Providers.md) and models.

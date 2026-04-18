@@ -1,35 +1,34 @@
 # Structured Data (JSON) Extraction
 
-One of the most powerful features of Leap AI is the ability to map AI responses directly to C# classes or records.
+One of the most powerful features of Leap AI SDK v2.0 is the ability to generate specific data structures natively from C# types using `GenerateObjectAsync<T>`.
 
-## ChatJsonService
+## GenerateObjectAsync
 
-The `ChatJsonService` ensures the LLM output is valid JSON and automatically deserializes it into your target type.
+The `GenerateObjectAsync<T>` method automatically parses your C# Records or Classes into standard JSON Schemas and enforces the LLM to output accurate matching JSON, mapped back to the strong type automatically.
 
 ```csharp
-using AiSdk.Services.ChatJson;
+using Leap.AI.Core;
+using Leap.AI.Providers.OpenAi;
 
-// Define your model
-public record BookInfo(string Title, string Author, List<string> Themes);
+// Define your highly nested model
+public record CharacterSetup(string Name, string Class, int Level, List<string> Inventory);
 
-var jsonService = new ChatJsonService();
-var options = new ChatCreateOptions {
-    Model = model,
-    Messages = new List<ChatMessage> {
-        new ChatMessage { Role = ChatRoles.User, Content = "Analyze 'The Great Gatsby'." }
-    }
-};
+var leap = LeapClient.Create().UseOpenAi("sk-...", "gpt-4o").Build();
 
-BookInfo info = await jsonService.CreateObjectAsync<BookInfo>(options);
-Console.WriteLine($"Author: {info.Author}");
+// Generate it!
+CharacterSetup character = await leap.GenerateObjectAsync<CharacterSetup>(
+    "Generate a level 5 elven ranger for an RPG, with 3 signature items in their inventory."
+);
+
+Console.WriteLine($"Name: {character.Name}");
+Console.WriteLine($"Items: {string.Join(", ", character.Inventory)}");
 ```
 
 ## How it Works
-1. **Schema Generation**: Leap automatically generates a JSON Schema from your C# type.
-2. **Strict Mode**: It instructs the LLM to adhere strictly to that schema.
-3. **Validation**: The SDK validates the response before returning the object to you.
+1. **Schema Generator**: Leap automatically extracts a complete `json_schema` definition by reflecting on `<T>`. 
+2. **Provider Enforcement**: The provider (`OpenAI`, `Anthropic`, `Google`) is given instructions to output JSON exactly matching your defined structure properties natively.
+3. **Validation Retry**: (Coming) Built-in resilience middleware attempts deserialization and throws parsing errors for bad structures automatically.
 
 ## Tips for Better JSON
-- Use Descriptive Property Names: Help the AI understand what each field represents.
-- Use `Required` or `DefaultValue` if needed via attributes.
-- Keep schemas simple for smaller models; larger models can handle complex nested objects.
+- Use descriptive property names to help the AI understand what each field means.
+- Small models may struggle with large, highly nested definitions. Use advanced models like `gpt-4o` or `claude-3-5-sonnet` for heavy JSON logic.

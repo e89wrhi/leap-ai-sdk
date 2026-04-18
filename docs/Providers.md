@@ -1,30 +1,41 @@
 # AI Providers
 
-The Leap AI SDK is designed to be provider-agnostic. You can switch between different AI services by simply swapping the `ILanguageModel` implementation.
+The Leap AI SDK v2.0 is designed from the ground up to be fully provider-agnostic. You can switch between different AI services by simply swapping the provider configuration in the pipeline builder.
 
 ## Supported Providers
 
 ### OpenAI
-The default provider supporting GPT-4, GPT-3.5, and the new O-series models.
+The default provider supporting GPT-4o, GPT-3.5, and the O-series models.
 
 ```csharp
-var model = new OpenAiModel(OpenAiModels.Gpt4o);
+var leap = LeapClient.Create()
+    .UseOpenAi("api-key", "gpt-4o")
+    .Build();
 ```
 
-### Anthropic (Coming Soon)
-Support for Claude 3.5 Sonnet, Opus, and Haiku.
-
-### Google (Coming Soon)
-Support for Gemini Flash and Pro.
-
-### Custom REST Providers
-You can implement your own provider by inheriting from `BaseLanguageModel` and implementing the necessary parsing logic.
-
-## Configuration per Provider
-
-Some providers may require additional configuration (like Organization ID for OpenAI or specific Base URLs for local LLMs).
+### Anthropic
+Native support for Claude 3.5 Sonnet, Opus, and Haiku.
 
 ```csharp
-// Example for future versions
-var model = new CustomModel("base-url", "custom-path");
+var leap = LeapClient.Create()
+    .UseAnthropic("api-key", "claude-3-5-sonnet-20240620")
+    .Build();
+```
+
+### Google Gemini
+Native support for Gemini 1.5 Flash and Pro.
+
+```csharp
+var leap = LeapClient.Create()
+    .UseGoogle("api-key", "gemini-1.5-flash")
+    .Build();
+```
+
+## Custom REST Providers
+
+To implement your own provider, simply create a class that implements `ILeapProvider` from the `Leap.AI.Core.Abstractions` project.
+
+You will need to implement a single method:
+```csharp
+Task<ChatResponse> GenerateAsync(ChatRequest request, CancellationToken cancellationToken = default);
 ```
