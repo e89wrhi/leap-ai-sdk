@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 
-    <PackageId>Leap.AI.Core</PackageId>
+    <PackageId>LeapAi.SDK.Core</PackageId>
     <Version>2.0.0</Version>
     <Authors>Leap AI</Authors>
     <Company>Leap AI</Company>
