@@ -34,10 +34,10 @@ dotnet add package LeapAi.Sdk
 Leap AI SDK v2.0 introduces a modular architecture. You can install the fully-featured metapackage or adopt specifically what you need:
 - `LeapAi.SDK`: The all-in-one metapackage containing Core and all available providers.
 - `Leap.AI.Core`: The bare-metal abstractions, unified models, and pipeline architecture.
-- `Leap.AI.Providers.OpenAi`: Official OpenAI adapter (GPT-4o, o1, etc.).
-- `Leap.AI.Providers.Anthropic`: Official Anthropic adapter (Claude 3.5 Sonnet, etc.).
-- `Leap.AI.Providers.Google`: Official Google Gemini adapter (Gemini 1.5 Flash/Pro, etc.).
-- `Leap.AI.Extensions.DependencyInjection`: Official builder extensions for ASP.NET Core `IServiceCollection` integrations.
+- [`LeapAi.SDK.Providers.OpenAi`](https://www.nuget.org/packages/LeapAi.SDK.Providers.OpenAi/): Official OpenAI adapter (GPT-4o, o1, etc.).
+- [`LeapAi.SDK.Providers.Anthropic`](https://www.nuget.org/packages/LeapAi.SDK.Providers.Anthropic/): Official Anthropic adapter (Claude 3.5 Sonnet, etc.).
+- [`LeapAi.SDK.Providers.Google`](https://www.nuget.org/packages/LeapAi.SDK.Providers.Google/): Official Google Gemini adapter (Gemini 1.5 Flash/Pro, etc.).
+- [`LeapAi.SDK.Extensions.DependencyInjection`](https://www.nuget.org/packages/LeapAi.SDK.Extensions.DependencyInjection/): Official builder extensions for ASP.NET Core `IServiceCollection` integrations.
 
 ## Unified Provider Architecture
 
