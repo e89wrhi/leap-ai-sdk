@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Leap.AI\Leap.AI.csproj" />
+    <ProjectReference Include="..\Leap.AI.Core\Leap.AI.Core.csproj" />
+    <ProjectReference Include="..\Leap.AI.Providers.OpenAi\Leap.AI.Providers.OpenAi.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <PackageId>Leap.AI.Extensions.DependencyInjection</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Leap AI</Authors>
+    <Description>Dependency Injection extensions for Leap AI SDK v2.0. Related packages: LeapAi.SDK (Metapackage), Leap.AI.Core, Leap.AI.Providers.Anthropic, Leap.AI.Providers.Google, Leap.AI.Providers.OpenAi.</Description>
+    <PackageTags>ai;llm;sdk;dependency-injection;aspnetcore</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Leap.AI.Core\Leap.AI.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+  </ItemGroup>
+
+</Project>

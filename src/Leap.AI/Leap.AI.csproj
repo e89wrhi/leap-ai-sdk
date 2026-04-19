@@ -7,11 +7,11 @@
     
     <!-- NuGet Package Metadata -->
     <PackageId>LeapAi.SDK</PackageId>
-    <Version>1.0.0</Version>
+    <Version>2.0.0-preview.1</Version>
     <Authors>Leap AI</Authors>
     <Company>Leap AI</Company>
-    <Description>High-performance, provider-agnostic .NET AI SDK inspired by the Vercel AI SDK and Stripe.net architectures.</Description>
-    <PackageTags>ai;llm;sdk;openai;anthropic;gemini</PackageTags>
+    <Description>Leap AI SDK v2.0 - A high-performance, provider-agnostic .NET AI orchestrator with middleware pipelines, structured output, and automatic tool calling. This metapackage includes Core and OpenAI provider.</Description>
+    <PackageTags>ai;llm;sdk;openai;anthropic;gemini;streaming;pipeline</PackageTags>
     <RepositoryUrl>https://github.com/e89wrhi/leap-ai-sdk</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -19,8 +19,15 @@
     <!-- Auto-generate package on build -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
   <ItemGroup>
-    <Folder Include="Events\" />
+    <ProjectReference Include="..\Leap.AI.Core\Leap.AI.Core.csproj" />
+    <ProjectReference Include="..\Leap.AI.Providers.OpenAi\Leap.AI.Providers.OpenAi.csproj" />
+    <ProjectReference Include="..\Leap.AI.Providers.Anthropic\Leap.AI.Providers.Anthropic.csproj" />
+    <ProjectReference Include="..\Leap.AI.Providers.Google\Leap.AI.Providers.Google.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
