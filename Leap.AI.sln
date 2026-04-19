@@ -26,10 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{02EA68
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "models", "models", "{80509741-DD2C-4156-BE16-B1A97DE08C14}"
 	ProjectSection(SolutionItems) = preProject
-		assets\models\deepseek.png = assets\models\deepseek.png
+		assets\models\claude.png = assets\models\claude.png
 		assets\models\gemini.png = assets\models\gemini.png
 		assets\models\gpt.png = assets\models\gpt.png
-		assets\models\grok.png = assets\models\grok.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v2.0", "v2.0", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"

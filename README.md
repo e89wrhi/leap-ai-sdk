@@ -16,12 +16,10 @@
 The **Leap AI SDK** is a provider-agnostic .NET toolkit designed to help you build AI-powered applications, chatbots, and agents. Built with a highly scalable, enterprise-grade architecture, it provides a unified, stateless service interface to interact with any language model.
 
 **AI Models**
-
 <p align="start">
   <img src="assets/models/gpt.png" width="15%" />
   <img src="assets/models/gemini.png" width="15%" />
-  <img src="assets/models/deepseek.png" width="15%" />
-  <img src="assets/models/grok.png" width="15%" />
+  <img src="assets/models/claude.png" width="15%" />
 </p>
 
 ## Installation

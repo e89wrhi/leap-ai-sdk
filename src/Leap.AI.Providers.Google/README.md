@@ -20,8 +20,7 @@ The **Leap AI SDK** is a provider-agnostic .NET toolkit designed to help you bui
 <p align="start">
   <img src="assets/models/gpt.png" width="15%" />
   <img src="assets/models/gemini.png" width="15%" />
-  <img src="assets/models/deepseek.png" width="15%" />
-  <img src="assets/models/grok.png" width="15%" />
+  <img src="assets/models/claude.png" width="15%" />
 </p>
 
 ## Installation
