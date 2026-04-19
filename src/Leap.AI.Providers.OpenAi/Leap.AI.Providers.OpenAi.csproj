@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 
-    <PackageId>Leap.AI.Providers.OpenAi</PackageId>
+    <PackageId>LeapAi.SDK.Providers.OpenAi</PackageId>
     <Version>2.0.0</Version>
     <Authors>Leap AI</Authors>
     <Description>OpenAI Chat Completions provider for Leap AI SDK v2.0. Supports GPT-4o, GPT-4, GPT-3.5 with streaming and tool calling. Related packages: LeapAi.SDK (Metapackage), Leap.AI.Core, Leap.AI.Providers.Anthropic, Leap.AI.Providers.Google, Leap.AI.Extensions.DependencyInjection.</Description>

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 
-    <PackageId>Leap.AI.Providers.Google</PackageId>
+    <PackageId>LeapAi.SDK.Providers.Google</PackageId>
     <Version>2.0.0</Version>
     <Authors>Leap AI</Authors>
     <Description>Google Gemini provider for Leap AI SDK v2.0. Supports Gemini 1.5 Pro/Flash with streaming and tool calling. Related packages: LeapAi.SDK (Metapackage), Leap.AI.Core, Leap.AI.Providers.Anthropic, Leap.AI.Providers.OpenAi, Leap.AI.Extensions.DependencyInjection.</Description>
