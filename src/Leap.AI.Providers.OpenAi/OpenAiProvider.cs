@@ -104,6 +104,7 @@ public sealed class OpenAiProvider : ILeapProvider
         Temperature = req.Temperature,
         MaxTokens   = req.MaxTokens,
         Stream      = stream,
+        StreamOptions = stream ? new { include_usage = true } : null,
         Tools       = req.Tools?.Select(t => new OpenAiTool
         {
             Function = new OpenAiFunctionDef

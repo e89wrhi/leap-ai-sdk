@@ -20,6 +20,7 @@ The **Leap AI SDK** is a provider-agnostic .NET toolkit designed to help you bui
   <img src="assets/models/gpt.png" width="15%" />
   <img src="assets/models/gemini.png" width="15%" />
   <img src="assets/models/claude.png" width="15%" />
+  <img src="assets/models/grok.png" width="15%" />
 </p>
 
 ## Installation
@@ -32,16 +33,17 @@ dotnet add package LeapAi.Sdk
 
 ### Available NuGet Packages
 Leap AI SDK v2.0 introduces a modular architecture. You can install the fully-featured metapackage or adopt specifically what you need:
-- `LeapAi.SDK`: The all-in-one metapackage containing Core and all available providers.
+- `LeapAi.SDK`: The all-in-one metapackage containing Core and all official providers.
 - `Leap.AI.Core`: The bare-metal abstractions, unified models, and pipeline architecture.
-- [`LeapAi.SDK.Providers.OpenAi`](https://www.nuget.org/packages/LeapAi.SDK.Providers.OpenAi/): Official OpenAI adapter (GPT-4o, o1, etc.).
-- [`LeapAi.SDK.Providers.Anthropic`](https://www.nuget.org/packages/LeapAi.SDK.Providers.Anthropic/): Official Anthropic adapter (Claude 3.5 Sonnet, etc.).
-- [`LeapAi.SDK.Providers.Google`](https://www.nuget.org/packages/LeapAi.SDK.Providers.Google/): Official Google Gemini adapter (Gemini 1.5 Flash/Pro, etc.).
+- [`LeapAi.SDK.Providers.OpenAi`](https://www.nuget.org/packages/LeapAi.SDK.Providers.OpenAi/): Official OpenAI adapter (GPT-4o, o3-mini, etc.).
+- [`LeapAi.SDK.Providers.Anthropic`](https://www.nuget.org/packages/LeapAi.SDK.Providers.Anthropic/): Official Anthropic adapter (Claude 3.5 / 3.7 Sonnet, etc.).
+- [`LeapAi.SDK.Providers.Google`](https://www.nuget.org/packages/LeapAi.SDK.Providers.Google/): Official Google Gemini adapter (Gemini 2.0 Flash, 1.5 Pro, etc.).
+- [`LeapAi.SDK.Providers.xAI`](https://www.nuget.org/packages/LeapAi.SDK.Providers.xAI/): Official xAI Grok adapter (Grok-3, Grok-2, etc.).
 - [`LeapAi.SDK.Extensions.DependencyInjection`](https://www.nuget.org/packages/LeapAi.SDK.Extensions.DependencyInjection/): Official builder extensions for ASP.NET Core `IServiceCollection` integrations.
 
 ## Unified Provider Architecture
 
-Leap AI SDK v2.0 introduces a high-performance **middleware pipeline** architecture designed natively for .NET. It lets you plug in OpenAI, Anthropic, or Google Gemini and write strictly against a unified, model-agnostic `LeapClient`.
+Leap AI SDK v2.0 introduces a high-performance **middleware pipeline** architecture designed natively for .NET. It lets you plug in OpenAI, Anthropic, Google Gemini, or xAI Grok and write strictly against a unified, model-agnostic `LeapClient`.
 
 ```csharp
 using Leap.AI.Core;
@@ -50,7 +52,7 @@ using Leap.AI.Core.Models;
 
 // 1. Build your client pipeline
 var leap = LeapClient.Create()
-    .UseOpenAi("sk-...", "gpt-4o-mini") // Or .UseAnthropic() / .UseGoogle()
+    .UseOpenAi("sk-...", "gpt-4o-mini") // Or .UseAnthropic() / .UseGoogle() / .UseXAi()
     .UseLogging()
     .UseRetry(maxRetries: 3)
     .Build();
@@ -73,8 +75,8 @@ var messages = new List<ChatMessage> {
     ChatMessage.User("What is an agent?")
 };
 
-var response = await leap.GenerateTextAsync(messages.ToString());
-Console.WriteLine(response);
+var response = await leap.GenerateAsync(messages);
+Console.WriteLine(response.Text);
 ```
 
 ### Streaming Text

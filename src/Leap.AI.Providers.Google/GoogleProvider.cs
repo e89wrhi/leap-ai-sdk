@@ -119,8 +119,10 @@ public sealed class GoogleProvider : ILeapProvider
 
     private string BuildUrl(bool isStream)
     {
-        var action = isStream ? "streamGenerateContent?alt=sse" : "generateContent";
-        return $"{_options.BaseUrl.TrimEnd('/')}/models/{_options.DefaultModel}:{action}&key={_options.ApiKey}";
+        var baseModel = $"{_options.BaseUrl.TrimEnd('/')}/models/{_options.DefaultModel}";
+        return isStream
+            ? $"{baseModel}:streamGenerateContent?alt=sse&key={_options.ApiKey}"
+            : $"{baseModel}:generateContent?key={_options.ApiKey}";
     }
 
     /// <summary>

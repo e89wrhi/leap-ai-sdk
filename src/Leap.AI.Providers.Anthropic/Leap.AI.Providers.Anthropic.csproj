@@ -9,8 +9,8 @@
     <PackageId>LeapAi.SDK.Providers.Anthropic</PackageId>
     <Version>2.0.0</Version>
     <Authors>Leap AI</Authors>
-    <Description>Anthropic messages provider for Leap AI SDK v2.0. Supports Claude 3, 3.5 with streaming and tool calling. Related packages: LeapAi.SDK (Metapackage), Leap.AI.Core, Leap.AI.Providers.Google, Leap.AI.Providers.OpenAi, Leap.AI.Extensions.DependencyInjection.</Description>
-    <PackageTags>ai;llm;anthropic;claude;sdk;streaming</PackageTags>
+    <Description>Anthropic Messages API provider for Leap AI SDK. Supports Claude 3.5 Sonnet, Claude 3.7 Sonnet, and Haiku. Full support for streaming and tool calling. Related packages: LeapAi.SDK, Leap.AI.Core, Leap.AI.Providers.OpenAi, Leap.AI.Providers.Google, Leap.AI.Providers.xAI.</Description>
+    <PackageTags>ai;llm;anthropic;claude;sdk;streaming;orchestration</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

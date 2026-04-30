@@ -8,9 +8,9 @@ public sealed class GoogleOptions
 
     /// <summary>
     /// Default Gemini model to use when the request does not specify one.
-    /// Defaults to <c>gemini-1.5-flash</c> for its speed/quality balance.
+    /// Defaults to <c>gemini-2.0-flash</c> for its speed/quality balance.
     /// </summary>
-    public string DefaultModel { get; set; } = "gemini-1.5-flash";
+    public string DefaultModel { get; set; } = "gemini-2.0-flash";
 
     /// <summary>
     /// Base URL for the Google Generative Language REST API.

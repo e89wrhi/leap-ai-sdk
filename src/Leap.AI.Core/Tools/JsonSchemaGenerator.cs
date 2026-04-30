@@ -76,10 +76,15 @@ public static class JsonSchemaGenerator
 
             properties[jsonName] = BuildSchema(prop.PropertyType, new HashSet<Type>(visited));
 
-            var nullInfo = ctx.Create(prop);
-            bool isNullable = !prop.PropertyType.IsValueType
-                && nullInfo.WriteState == NullabilityState.Nullable;
-            if (!isNullable) required.Add(jsonName);
+            var nullInfo    = ctx.Create(prop);
+            // A property is optional when:
+            //   - it is a reference type annotated as nullable (string?, MyClass?), OR
+            //   - it is a Nullable<T> value type (bool?, int?, etc.)
+            var isNullableValueType = Nullable.GetUnderlyingType(prop.PropertyType) is not null;
+            var isNullableRefType   = !prop.PropertyType.IsValueType
+                                      && nullInfo.WriteState == NullabilityState.Nullable;
+            bool isOptional = isNullableValueType || isNullableRefType;
+            if (!isOptional) required.Add(jsonName);
         }
 
         visited.Remove(type);

@@ -4,8 +4,7 @@ using Leap.AI.Providers.Anthropic;
 namespace Leap.AI.Core;
 
 /// <summary>
-/// I've created these extensions to make it effortless to plug Anthropic into your AI pipeline.
-/// Simply call .UseAnthropic("your-key") and you're good to go.
+/// Extension methods on <see cref="LeapClientBuilder"/> for the Anthropic Claude provider.
 /// </summary>
 public static class AnthropicLeapBuilderExtensions
 {
@@ -25,8 +24,8 @@ public static class AnthropicLeapBuilderExtensions
     }
 
     /// <summary>
-    /// Configures the LeapClient with full Anthropic options.
-    /// This is where I recommend going if you need custom base URLs for proxies or specific API versions.
+    /// Configures the <see cref="LeapClient"/> with a fully-populated <see cref="AnthropicOptions"/> object.
+    /// Use this overload when a custom <c>BaseUrl</c>, <c>AnthropicVersion</c>, or <see cref="System.Net.Http.HttpClient"/> is required.
     /// </summary>
     public static LeapClientBuilder UseAnthropic(
         this LeapClientBuilder builder,
@@ -36,7 +35,7 @@ public static class AnthropicLeapBuilderExtensions
     }
 
     /// <summary>
-    /// If you prefer a more functional configuration style, I've got you covered here.
+    /// Configures the <see cref="LeapClient"/> to use Anthropic via a delegate-based options setup.
     /// </summary>
     public static LeapClientBuilder UseAnthropic(
         this LeapClientBuilder builder,

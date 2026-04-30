@@ -10,11 +10,11 @@ public static class GoogleLeapBuilderExtensions
     /// Configures the client to use Google Gemini with just an API key.
     /// </summary>
     /// <param name="apiKey">Your Google AI Studio API key.</param>
-    /// <param name="defaultModel">Model override. Defaults to <c>gemini-1.5-flash</c>.</param>
+    /// <param name="defaultModel">Model override. Defaults to <c>gemini-2.0-flash</c>.</param>
     public static LeapClientBuilder UseGoogle(
         this LeapClientBuilder builder,
         string apiKey,
-        string defaultModel = "gemini-1.5-flash")
+        string defaultModel = "gemini-2.0-flash")
         => builder.UseGoogle(new GoogleOptions { ApiKey = apiKey, DefaultModel = defaultModel });
 
     /// <summary>Configures the client using a fully populated <see cref="GoogleOptions"/> object.</summary>
