@@ -7,7 +7,7 @@
     <LangVersion>latest</LangVersion>
 
     <PackageId>LeapAi.SDK.Extensions.DependencyInjection</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>Leap AI</Authors>
     <Description>Standard Dependency Injection extensions for the Leap AI SDK. Provides .AddLeap() for IServiceCollection integration. Related packages: LeapAi.SDK, Leap.AI.Core, Leap.AI.Providers.OpenAi, Leap.AI.Providers.Anthropic, Leap.AI.Providers.Google, Leap.AI.Providers.xAI.</Description>
     <PackageTags>ai;llm;sdk;dependency-injection;aspnetcore;orchestration</PackageTags>
