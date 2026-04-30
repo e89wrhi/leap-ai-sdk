@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Leap.AI.Core.Models;
 
@@ -34,4 +34,8 @@ internal sealed class OpenAiChatRequest
     [JsonPropertyName("response_format")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? ResponseFormat { get; init; }
+
+    [JsonPropertyName("stream_options")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public object? StreamOptions { get; init; }
 }

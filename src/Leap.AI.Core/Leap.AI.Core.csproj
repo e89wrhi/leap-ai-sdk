@@ -10,8 +10,8 @@
     <Version>2.0.0</Version>
     <Authors>Leap AI</Authors>
     <Company>Leap AI</Company>
-    <Description>Core abstractions, pipeline engine, and fluent API for Leap AI SDK v2.0. Provider-agnostic streaming-first .NET AI orchestration. Related packages: LeapAi.SDK (Metapackage), Leap.AI.Providers.Anthropic, Leap.AI.Providers.Google, Leap.AI.Providers.OpenAi, Leap.AI.Extensions.DependencyInjection.</Description>
-    <PackageTags>ai;llm;sdk;streaming;pipeline;middleware</PackageTags>
+    <Description>Core abstractions, middleware engine, and unified pipeline for the Leap AI SDK. Provides a provider-agnostic interface for text generation, streaming, and structured output. Related packages: LeapAi.SDK, Leap.AI.Providers.OpenAi, Leap.AI.Providers.Anthropic, Leap.AI.Providers.Google, Leap.AI.Providers.xAI.</Description>
+    <PackageTags>ai;llm;sdk;orchestration;middleware;pipeline;openai;anthropic;google;gemini;xai</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/e89wrhi/leap-ai-sdk</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>

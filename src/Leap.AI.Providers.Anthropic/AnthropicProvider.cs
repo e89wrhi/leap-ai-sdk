@@ -10,11 +10,11 @@ using Leap.AI.Providers.Anthropic.Dtos;
 namespace Leap.AI.Providers.Anthropic;
 
 /// <summary>
-/// Anthropic Messages API implementation for Leap AI.
+/// Leap AI provider for the Anthropic Messages API (Claude 3/3.5/3.7 family).
 /// <para>
-/// I've designed this provider to handle the unique nuances of Anthropic's Messages API,
-/// which differs significantly from OpenAI-style schemas (especially in how it handles system prompts
-/// and the strict separation of message roles). 
+/// Handles the unique nuances of Anthropic's Messages API, which differs from
+/// OpenAI-style schemas — particularly around system prompts (a separate top-level
+/// field) and the strict alternation of message roles.
 /// </para>
 /// </summary>
 public sealed class AnthropicProvider : ILeapProvider
@@ -33,10 +33,9 @@ public sealed class AnthropicProvider : ILeapProvider
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _httpClient = options.HttpClient ?? new HttpClient();
-        
-        // I set these headers once to ensure every request is properly identified
-        // We set these headers to ensure every request is properly identified
-        // by Anthropic's load balancers and versioned correctly.
+
+        // Set once so every request is properly identified by Anthropic's
+        // load balancers and pinned to the correct API version.
         _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", options.ApiKey);
         _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("anthropic-version", options.AnthropicVersion);
         if (!_httpClient.DefaultRequestHeaders.Accept.Any(x => x.MediaType == "application/json"))
@@ -46,9 +45,8 @@ public sealed class AnthropicProvider : ILeapProvider
     }
 
     /// <summary>
-    /// Executes a non-streaming chat request.
-    /// I've optimized this to wait for the full JSON response and then map the content
-    /// blocks into the unified Leap ChatResponse structure.
+    /// Executes a non-streaming chat request and maps the full Anthropic
+    /// response body into the unified <see cref="ChatResponse"/> structure.
     /// </summary>
     public async Task<ChatResponse> GenerateAsync(ChatRequest request, CancellationToken ct = default)
     {
@@ -70,9 +68,9 @@ public sealed class AnthropicProvider : ILeapProvider
     }
 
     /// <summary>
-    /// Implements SSE streaming for Anthropic.
-    /// Anthropic's stream format is "event-based" (message_start, content_block_delta, etc.),
-    /// so 1 wrote this state machine to collect tokens and correctly yield them as ChatChunks.
+    /// Streams response chunks via Anthropic's SSE event format
+    /// (<c>message_start</c>, <c>content_block_delta</c>, <c>message_stop</c>, etc.)
+    /// and yields each token as a <see cref="ChatChunk"/>.
     /// </summary>
     public async IAsyncEnumerable<ChatChunk> StreamAsync(
         ChatRequest request, 
@@ -126,8 +124,8 @@ public sealed class AnthropicProvider : ILeapProvider
 
     private AnthropicChatRequest MapRequest(ChatRequest request, bool isStream)
     {
-        // Anthropic requires system prompts to be a separate top-level field,
-        // so I filter them out of the main message list.
+        // Anthropic requires system prompts in a separate top-level field —
+        // they must be excluded from the messages list.
         var systemMessage = request.Messages.LastOrDefault(m => m.Role == "system");
         var messages = request.Messages
             .Where(m => m.Role != "system")
@@ -172,9 +170,9 @@ public sealed class AnthropicProvider : ILeapProvider
         if (response.IsSuccessStatusCode) return;
 
         var body = await response.Content.ReadAsStringAsync(ct);
-        
-        // I map Anthropic's specific status codes to Leap's unified exception types
-        // so developers don't have to catch provider-specific errors.
+
+        // Map Anthropic status codes to Leap's unified exception types
+        // so callers never need to handle provider-specific error shapes.
         throw response.StatusCode switch
         {
             System.Net.HttpStatusCode.Unauthorized or System.Net.HttpStatusCode.Forbidden 

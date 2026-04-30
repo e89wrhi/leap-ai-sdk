@@ -43,7 +43,7 @@ public static class OpenAiLeapBuilderExtensions
         this LeapClientBuilder builder,
         Action<OpenAiOptions> configure)
     {
-        var options = new OpenAiOptions { ApiKey = string.Empty }; // Placeholder, will be set in configure
+        var options = new OpenAiOptions { ApiKey = string.Empty };
         configure(options);
         
         if (string.IsNullOrEmpty(options.ApiKey))

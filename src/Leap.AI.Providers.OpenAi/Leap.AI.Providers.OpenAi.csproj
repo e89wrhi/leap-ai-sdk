@@ -9,8 +9,8 @@
     <PackageId>LeapAi.SDK.Providers.OpenAi</PackageId>
     <Version>2.0.0</Version>
     <Authors>Leap AI</Authors>
-    <Description>OpenAI Chat Completions provider for Leap AI SDK v2.0. Supports GPT-4o, GPT-4, GPT-3.5 with streaming and tool calling. Related packages: LeapAi.SDK (Metapackage), Leap.AI.Core, Leap.AI.Providers.Anthropic, Leap.AI.Providers.Google, Leap.AI.Extensions.DependencyInjection.</Description>
-    <PackageTags>ai;llm;openai;gpt;sdk;streaming</PackageTags>
+    <Description>OpenAI Chat Completions provider for Leap AI SDK. Supports GPT-4o, o1, o3-mini, and GPT-4. Full support for streaming and tool calling. Related packages: LeapAi.SDK, Leap.AI.Core, Leap.AI.Providers.Anthropic, Leap.AI.Providers.Google, Leap.AI.Providers.xAI.</Description>
+    <PackageTags>ai;llm;openai;gpt;sdk;streaming;pipeline</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
